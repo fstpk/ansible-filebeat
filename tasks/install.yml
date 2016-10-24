@@ -1,0 +1,7 @@
+---
+
+- name: Install Filebeat service
+  package: name=filebeat update_cache=yes
+
+- name: Enable Filebeat autostart
+  service: name=filebeat enabled=yes

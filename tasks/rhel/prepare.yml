@@ -1,0 +1,17 @@
+---
+
+- name: Add Filebeat repository key
+  rpm_key: key={{ filebeat.repository.redhat.gpgkey }} state=present
+
+- name: Add Filebeat repository
+  yum_repository:
+    name: beats
+    description: Elastic Beats Repository
+    file: beats
+    baseurl: "{{ filebeat.repository.redhat.baseurl }}"
+    gpgkey: "{{ filebeat.repository.redhat.gpgkey }}"
+    gpgcheck: yes
+    enabled: yes
+
+- name: Install libselinux-python
+  package: name=libselinux-python update_cache=yes

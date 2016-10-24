@@ -1,0 +1,10 @@
+---
+- name: Create directory for included configs
+  file: path={{ filebeat.service.config_path }}/conf.d/
+        state=directory
+        mode=644
+
+- name: Copy Filebeat service config
+  template: src=filebeat.yml.j2 dest={{ filebeat.service.config_path }}/filebeat.yml
+            mode=644
+

@@ -1,0 +1,4 @@
+---
+
+- name: Restart filebeat service
+  service: name="{{ filebeat.service.name }}" state=restarted

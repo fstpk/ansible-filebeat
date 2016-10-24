@@ -1,0 +1,78 @@
+filebeat:
+  service:
+    name: filebeat
+    config_path: '/etc/filebeat'
+
+
+  repository:
+    redhat:
+      baseurl: 'https://packages.elastic.co/beats/yum/el/$basearch'
+      gpgkey: 'https://packages.elastic.co/GPG-KEY-elasticsearch'
+    debian:
+      baseurl: 'deb https://packages.elastic.co/beats/apt stable main'
+      gpgkey: 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+
+
+
+#################### FilebeatSettings ####################
+  options:
+    filebeat:
+      config_dir: /etc/filebeat/conf.d/
+      prospectors:
+        -
+          paths:
+            - /var/log/messages
+            - /var/log/cron
+            - /var/log/dmesg
+            - /var/log/secure
+            - /var/log/syslog
+            - /var/log/apt/history.log
+            - /var/log/dpkg.log
+            - /var/log/auth.log
+            - /var/log/user.log
+            - /var/log/yum.log
+          encoding: plain
+          input_type: log
+          document_type: log
+          scan_frequency: 1s
+          harvester_buffer_size: 16384
+          max_bytes: 10485760
+          tail_files: false
+          backoff: 1s
+          max_backoff: 10s
+          backoff_factor: 2
+          force_close_files: false
+          spool_size: 2048
+          publish_async: false
+          idle_timeout: 5s
+          registry_file: /var/lib/filebeat/registry
+
+    output:
+      elasticsearch:
+        hosts: 127.0.0.1
+        index: filebeat
+        max_retries: 3
+        bulk_max_size: 50
+        timeout: 90
+        flush_interval: 1
+        save_topology: false
+        topology_expire: 15
+
+      file:
+        path: "/tmp/filebeat"
+        filename: filebeat
+        rotate_every_kb: 10000
+        number_of_files: 7
+
+
+    shipper:
+
+    logging:
+      to_syslog: true
+      to_files: true
+      files:
+        path: /var/log/filebeat/
+        name: filebeat.log
+        rotateeverybytes: 10485760
+      level: info
+
